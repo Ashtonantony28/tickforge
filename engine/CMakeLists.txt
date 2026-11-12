@@ -5,7 +5,8 @@ add_executable(tf_tests
   tests/test_order_book.cpp
   tests/test_fixture.cpp
   tests/test_sim.cpp
-  tests/test_l2_book.cpp)
+  tests/test_l2_book.cpp
+  tests/test_mm.cpp)
 target_link_libraries(tf_tests PRIVATE tickforge_engine)
 target_compile_definitions(tf_tests PRIVATE TF_FIXTURE_DIR="${PROJECT_SOURCE_DIR}/fixtures")
 add_test(NAME engine_unit COMMAND tf_tests)
@@ -27,3 +28,6 @@ target_link_libraries(tf_features PRIVATE tickforge_engine)
 
 add_executable(tf_filter tools/tf_filter.cpp)
 target_link_libraries(tf_filter PRIVATE tickforge_engine)
+
+add_executable(tf_mm tools/tf_mm.cpp)
+target_link_libraries(tf_mm PRIVATE tickforge_engine)
