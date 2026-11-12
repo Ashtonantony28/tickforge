@@ -28,8 +28,8 @@ jobs:
         run: cmake --build build
       - name: C++ tests
         run: ctest --test-dir build --output-on-failure
-      - name: Python tests
-        run: TF_BUILD_DIR=build pytest -q
+      - name: Python tests (incl. RTL vs engine under Verilator)
+        run: TF_BUILD_DIR=build python -m pytest -q
 
   sanitizers:
     runs-on: ubuntu-24.04
@@ -42,3 +42,17 @@ jobs:
           cmake -S . -B build-asan -G Ninja -DCMAKE_BUILD_TYPE=Debug -DTF_SANITIZE=ON
           cmake --build build-asan
           ctest --test-dir build-asan --output-on-failure
+
+  rtl-lint:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install "verilator>=5.036"
+      - name: Verilator lint (-Wall, warnings fatal)
+        run: |
+          export PATH="$(python -c 'import verilator,os;print(os.path.dirname(verilator.__file__))')/bin:$PATH"
+          verilator --lint-only -Wall rtl/tf_itch_pkg.sv rtl/tf_itch_parser.sv rtl/tf_order_table.sv \
+            rtl/tf_price_levels.sv rtl/tf_itch_book.sv --top-module tf_itch_book

@@ -48,6 +48,13 @@ PYBIND11_MODULE(_tickforge, m) {
              return r.feed(reinterpret_cast<const uint8_t*>(sv.data()), sv.size());
            },
            "Feed length-prefixed ITCH bytes; returns bytes consumed.")
+      .def("set_trace_locate", &tf::Replayer::set_trace_locate)
+      .def_property_readonly("trace",
+                             [](const tf::Replayer& r) {
+                               std::vector<std::tuple<uint64_t, uint32_t, uint64_t, uint32_t, uint64_t>> out;
+                               for (const auto& e : r.trace()) out.emplace_back(e.index, e.bid_px, e.bid_qty, e.ask_px, e.ask_qty);
+                               return out;
+                             }, "List of (msg_index, bid_px, bid_qty, ask_px, ask_qty) for the traced locate.")
       .def_property_readonly("digest", &tf::Replayer::digest)
       .def_property_readonly("messages", &tf::Replayer::messages)
       .def_property_readonly("trades", &tf::Replayer::trades)
