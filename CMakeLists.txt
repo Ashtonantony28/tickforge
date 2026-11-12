@@ -1,0 +1,46 @@
+cmake_minimum_required(VERSION 3.22)
+project(tickforge LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release)
+endif()
+
+option(TF_SANITIZE "Build with ASan + UBSan" OFF)
+option(TF_BUILD_PYTHON "Build the pybind11 module" ON)
+option(TF_NATIVE "Tune for the build machine (-march=native) for benchmarks" OFF)
+
+add_compile_options(-Wall -Wextra -Wpedantic -Wshadow -Wconversion -Wno-sign-conversion)
+if(TF_SANITIZE)
+  add_compile_options(-fsanitize=address,undefined -fno-omit-frame-pointer -fno-sanitize-recover=all)
+  add_link_options(-fsanitize=address,undefined)
+endif()
+if(TF_NATIVE)
+  add_compile_options(-march=native)
+endif()
+
+add_library(tickforge_engine INTERFACE)
+target_include_directories(tickforge_engine INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/engine/include)
+
+enable_testing()
+add_subdirectory(engine)
+
+if(TF_BUILD_PYTHON AND NOT TF_SANITIZE)
+  find_package(Python3 COMPONENTS Interpreter Development.Module)
+  if(Python3_FOUND)
+    execute_process(COMMAND ${Python3_EXECUTABLE} -m pybind11 --cmakedir
+                    OUTPUT_VARIABLE pybind11_DIR OUTPUT_STRIP_TRAILING_WHITESPACE
+                    RESULT_VARIABLE _pyb_rc ERROR_QUIET)
+    if(_pyb_rc EQUAL 0)
+      find_package(pybind11 CONFIG)
+    endif()
+  endif()
+  if(pybind11_FOUND)
+    add_subdirectory(bindings)
+  else()
+    message(STATUS "pybind11 not found: skipping Python module (pip install pybind11)")
+  endif()
+endif()

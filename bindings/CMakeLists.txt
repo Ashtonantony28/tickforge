@@ -1,0 +1,2 @@
+pybind11_add_module(_tickforge module.cpp)
+target_link_libraries(_tickforge PRIVATE tickforge_engine)

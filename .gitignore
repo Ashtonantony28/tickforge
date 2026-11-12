@@ -1,0 +1,12 @@
+build*/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.so
+*.egg-info/
+# Market data is never committed (licensing + size). Fixtures under fixtures/ are synthetic.
+data/raw/
+data/cache/
+*.itch.gz
+*.NASDAQ_ITCH50*
+*.whl
