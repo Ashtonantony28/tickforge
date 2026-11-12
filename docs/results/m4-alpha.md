@@ -56,7 +56,8 @@ Avellaneda-Stoikov market maker with and without an L1-imbalance skew.
 ## Limitations
 - Seven days, one exchange, 15 names: per-day IC is shown so the dispersion is visible.
 - No DeepLOB model: with seven days it would mainly measure variance (ADR 0009).
-- The taker proxy ignores queue priority and impact, which would make it worse, not better.
+- The taker proxy enters at the same second's quote, i.e. with zero latency, and ignores impact.
+  Both would make it worse, so the "all trials lose" conclusion only gets stronger (audit M9-5).
 
 ## Reproduce
 ```bash

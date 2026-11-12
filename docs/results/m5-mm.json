@@ -34,244 +34,271 @@
       "net_usd": -14986.15,
       "gross_usd": -19853.76,
       "spread_capture_usd": 76988.69,
-      "adverse_selection_usd": -96522.15,
-      "inventory_other_usd": -320.31,
+      "adverse_selection_usd": -94879.36,
+      "inventory_other_usd": -1963.05,
       "fee_rebate_usd": 4867.6,
-      "maker_shares": 2436619
+      "maker_shares": 2436619,
+      "not_flat_symbol_days": 0
     },
     "g=0.01 k=100.0 a=1.0": {
       "net_usd": -14753.07,
       "gross_usd": -19868.68,
       "spread_capture_usd": 76278.84,
-      "adverse_selection_usd": -94563.76,
-      "inventory_other_usd": -1583.75,
+      "adverse_selection_usd": -93247.3,
+      "inventory_other_usd": -2900.24,
       "fee_rebate_usd": 5115.61,
-      "maker_shares": 2564879
+      "maker_shares": 2564879,
+      "not_flat_symbol_days": 0
     },
     "g=0.01 k=100.0 a=2.0": {
       "net_usd": -13473.76,
       "gross_usd": -18615.85,
       "spread_capture_usd": 74809.34,
-      "adverse_selection_usd": -94246.46,
-      "inventory_other_usd": 821.31,
+      "adverse_selection_usd": -92808.78,
+      "inventory_other_usd": -616.43,
       "fee_rebate_usd": 5142.09,
-      "maker_shares": 2578861
+      "maker_shares": 2578861,
+      "not_flat_symbol_days": 0
     },
     "g=0.01 k=200.0 a=0.0": {
       "net_usd": -20220.64,
       "gross_usd": -34538.62,
       "spread_capture_usd": 98000.67,
-      "adverse_selection_usd": -130844.12,
-      "inventory_other_usd": -1695.22,
+      "adverse_selection_usd": -129524.14,
+      "inventory_other_usd": -3015.23,
       "fee_rebate_usd": 14317.99,
-      "maker_shares": 7161147
+      "maker_shares": 7161147,
+      "not_flat_symbol_days": 0
     },
     "g=0.01 k=200.0 a=1.0": {
       "net_usd": -15653.75,
       "gross_usd": -24129.57,
       "spread_capture_usd": 85596.43,
-      "adverse_selection_usd": -108664.09,
-      "inventory_other_usd": -1061.87,
+      "adverse_selection_usd": -107197.77,
+      "inventory_other_usd": -2528.28,
       "fee_rebate_usd": 8475.83,
-      "maker_shares": 4244370
+      "maker_shares": 4244370,
+      "not_flat_symbol_days": 0
     },
     "g=0.01 k=200.0 a=2.0": {
       "net_usd": -15613.94,
       "gross_usd": -22766.08,
       "spread_capture_usd": 80858.08,
-      "adverse_selection_usd": -101974.74,
-      "inventory_other_usd": -1649.41,
+      "adverse_selection_usd": -100886.66,
+      "inventory_other_usd": -2737.48,
       "fee_rebate_usd": 7152.15,
-      "maker_shares": 3584051
+      "maker_shares": 3584051,
+      "not_flat_symbol_days": 0
     },
     "g=0.01 k=400.0 a=0.0": {
       "net_usd": -26702.38,
       "gross_usd": -51253.15,
       "spread_capture_usd": 114689.05,
-      "adverse_selection_usd": -165274.84,
-      "inventory_other_usd": -667.35,
+      "adverse_selection_usd": -163763.66,
+      "inventory_other_usd": -2178.56,
       "fee_rebate_usd": 24550.77,
-      "maker_shares": 12282090
+      "maker_shares": 12282090,
+      "not_flat_symbol_days": 0
     },
     "g=0.01 k=400.0 a=1.0": {
       "net_usd": -16669.81,
       "gross_usd": -27722.86,
       "spread_capture_usd": 91825.22,
-      "adverse_selection_usd": -119641.76,
-      "inventory_other_usd": 93.7,
+      "adverse_selection_usd": -117644.32,
+      "inventory_other_usd": -1903.79,
       "fee_rebate_usd": 11053.05,
-      "maker_shares": 5531005
+      "maker_shares": 5531005,
+      "not_flat_symbol_days": 0
     },
     "g=0.01 k=400.0 a=2.0": {
       "net_usd": -16705.91,
       "gross_usd": -25143.17,
       "spread_capture_usd": 84758.74,
-      "adverse_selection_usd": -108654.54,
-      "inventory_other_usd": -1247.35,
+      "adverse_selection_usd": -107205.45,
+      "inventory_other_usd": -2696.49,
       "fee_rebate_usd": 8437.26,
-      "maker_shares": 4225758
+      "maker_shares": 4225758,
+      "not_flat_symbol_days": 0
     },
     "g=0.1 k=100.0 a=0.0": {
       "net_usd": -14553.33,
       "gross_usd": -20314.08,
       "spread_capture_usd": 60217.05,
-      "adverse_selection_usd": -79668.05,
-      "inventory_other_usd": -863.04,
+      "adverse_selection_usd": -78855.79,
+      "inventory_other_usd": -1675.36,
       "fee_rebate_usd": 5760.74,
-      "maker_shares": 2881859
+      "maker_shares": 2881859,
+      "not_flat_symbol_days": 0
     },
     "g=0.1 k=100.0 a=1.0": {
       "net_usd": -14090.23,
       "gross_usd": -20812.94,
       "spread_capture_usd": 62508.05,
-      "adverse_selection_usd": -82693.34,
-      "inventory_other_usd": -627.67,
+      "adverse_selection_usd": -81942.59,
+      "inventory_other_usd": -1378.46,
       "fee_rebate_usd": 6722.71,
-      "maker_shares": 3363404
+      "maker_shares": 3363404,
+      "not_flat_symbol_days": 0
     },
     "g=0.1 k=100.0 a=2.0": {
       "net_usd": -13431.76,
       "gross_usd": -19931.66,
       "spread_capture_usd": 61451.94,
-      "adverse_selection_usd": -80872.36,
-      "inventory_other_usd": -511.25,
+      "adverse_selection_usd": -80345.4,
+      "inventory_other_usd": -1038.25,
       "fee_rebate_usd": 6499.9,
-      "maker_shares": 3252039
+      "maker_shares": 3252039,
+      "not_flat_symbol_days": 0
     },
     "g=0.1 k=200.0 a=0.0": {
       "net_usd": -15935.29,
       "gross_usd": -28823.26,
       "spread_capture_usd": 76063.3,
-      "adverse_selection_usd": -103263.97,
-      "inventory_other_usd": -1622.6,
+      "adverse_selection_usd": -102603.39,
+      "inventory_other_usd": -2283.21,
       "fee_rebate_usd": 12887.98,
-      "maker_shares": 6445835
+      "maker_shares": 6445835,
+      "not_flat_symbol_days": 0
     },
     "g=0.1 k=200.0 a=1.0": {
       "net_usd": -15398.9,
       "gross_usd": -25479.7,
       "spread_capture_usd": 70398.52,
-      "adverse_selection_usd": -95021.4,
-      "inventory_other_usd": -856.81,
+      "adverse_selection_usd": -94281.56,
+      "inventory_other_usd": -1596.7,
       "fee_rebate_usd": 10080.81,
-      "maker_shares": 5042252
+      "maker_shares": 5042252,
+      "not_flat_symbol_days": 0
     },
     "g=0.1 k=200.0 a=2.0": {
       "net_usd": -15383.25,
       "gross_usd": -23846.6,
       "spread_capture_usd": 66174.43,
-      "adverse_selection_usd": -86883.34,
-      "inventory_other_usd": -3137.71,
+      "adverse_selection_usd": -86211.21,
+      "inventory_other_usd": -3809.81,
       "fee_rebate_usd": 8463.36,
-      "maker_shares": 4233873
+      "maker_shares": 4233873,
+      "not_flat_symbol_days": 0
     },
     "g=0.1 k=400.0 a=0.0": {
       "net_usd": -18735.03,
       "gross_usd": -34854.14,
       "spread_capture_usd": 81967.73,
-      "adverse_selection_usd": -114312.21,
-      "inventory_other_usd": -2509.7,
+      "adverse_selection_usd": -113680.58,
+      "inventory_other_usd": -3141.34,
       "fee_rebate_usd": 16119.13,
-      "maker_shares": 8061938
+      "maker_shares": 8061938,
+      "not_flat_symbol_days": 0
     },
     "g=0.1 k=400.0 a=1.0": {
       "net_usd": -16292.87,
       "gross_usd": -28163.5,
       "spread_capture_usd": 74437.95,
-      "adverse_selection_usd": -101741.27,
-      "inventory_other_usd": -860.2,
+      "adverse_selection_usd": -101064.84,
+      "inventory_other_usd": -1536.62,
       "fee_rebate_usd": 11870.63,
-      "maker_shares": 5937769
+      "maker_shares": 5937769,
+      "not_flat_symbol_days": 0
     },
     "g=0.1 k=400.0 a=2.0": {
       "net_usd": -15437.31,
       "gross_usd": -24993.49,
       "spread_capture_usd": 69334.68,
-      "adverse_selection_usd": -92900.25,
-      "inventory_other_usd": -1427.97,
+      "adverse_selection_usd": -92286.91,
+      "inventory_other_usd": -2041.27,
       "fee_rebate_usd": 9556.18,
-      "maker_shares": 4780279
+      "maker_shares": 4780279,
+      "not_flat_symbol_days": 0
     },
     "g=1.0 k=100.0 a=0.0": {
       "net_usd": -11460.85,
       "gross_usd": -18088.09,
       "spread_capture_usd": 50556.3,
-      "adverse_selection_usd": -67354.21,
-      "inventory_other_usd": -1290.18,
+      "adverse_selection_usd": -66622.75,
+      "inventory_other_usd": -2021.7,
       "fee_rebate_usd": 6627.23,
-      "maker_shares": 3314738
+      "maker_shares": 3314738,
+      "not_flat_symbol_days": 0
     },
     "g=1.0 k=100.0 a=1.0": {
       "net_usd": -10972.83,
       "gross_usd": -19558.4,
       "spread_capture_usd": 54302.37,
-      "adverse_selection_usd": -72886.53,
-      "inventory_other_usd": -974.3,
+      "adverse_selection_usd": -72209.76,
+      "inventory_other_usd": -1651.05,
       "fee_rebate_usd": 8585.57,
-      "maker_shares": 4294240
+      "maker_shares": 4294240,
+      "not_flat_symbol_days": 0
     },
     "g=1.0 k=100.0 a=2.0": {
       "net_usd": -11952.18,
       "gross_usd": -20998.39,
       "spread_capture_usd": 56113.7,
-      "adverse_selection_usd": -76788.39,
-      "inventory_other_usd": -323.73,
+      "adverse_selection_usd": -76063.13,
+      "inventory_other_usd": -1048.97,
       "fee_rebate_usd": 9046.2,
-      "maker_shares": 4524369
+      "maker_shares": 4524369,
+      "not_flat_symbol_days": 0
     },
     "g=1.0 k=200.0 a=0.0": {
       "net_usd": -13307.99,
       "gross_usd": -25247.51,
       "spread_capture_usd": 62894.43,
-      "adverse_selection_usd": -86880.1,
-      "inventory_other_usd": -1261.88,
+      "adverse_selection_usd": -86145.59,
+      "inventory_other_usd": -1996.33,
       "fee_rebate_usd": 11939.51,
-      "maker_shares": 5972016
+      "maker_shares": 5972016,
+      "not_flat_symbol_days": 0
     },
     "g=1.0 k=200.0 a=1.0": {
       "net_usd": -11158.53,
       "gross_usd": -22860.38,
       "spread_capture_usd": 62385.67,
-      "adverse_selection_usd": -85319.1,
-      "inventory_other_usd": 73.06,
+      "adverse_selection_usd": -84797.75,
+      "inventory_other_usd": -448.26,
       "fee_rebate_usd": 11701.84,
-      "maker_shares": 5852820
+      "maker_shares": 5852820,
+      "not_flat_symbol_days": 0
     },
     "g=1.0 k=200.0 a=2.0": {
       "net_usd": -13332.25,
       "gross_usd": -24256.46,
       "spread_capture_usd": 60958.15,
-      "adverse_selection_usd": -83487.65,
-      "inventory_other_usd": -1726.99,
+      "adverse_selection_usd": -82944.46,
+      "inventory_other_usd": -2270.18,
       "fee_rebate_usd": 10924.21,
-      "maker_shares": 5463810
+      "maker_shares": 5463810,
+      "not_flat_symbol_days": 0
     },
     "g=1.0 k=400.0 a=0.0": {
       "net_usd": -13964.63,
       "gross_usd": -27470.25,
       "spread_capture_usd": 66433.6,
-      "adverse_selection_usd": -92794.16,
-      "inventory_other_usd": -1109.75,
+      "adverse_selection_usd": -91987.52,
+      "inventory_other_usd": -1916.33,
       "fee_rebate_usd": 13505.61,
-      "maker_shares": 6755253
+      "maker_shares": 6755253,
+      "not_flat_symbol_days": 0
     },
     "g=1.0 k=400.0 a=1.0": {
       "net_usd": -13654.52,
       "gross_usd": -26583.6,
       "spread_capture_usd": 65219.67,
-      "adverse_selection_usd": -90631.06,
-      "inventory_other_usd": -1172.24,
+      "adverse_selection_usd": -90018.43,
+      "inventory_other_usd": -1784.86,
       "fee_rebate_usd": 12929.07,
-      "maker_shares": 6466425
+      "maker_shares": 6466425,
+      "not_flat_symbol_days": 0
     },
     "g=1.0 k=400.0 a=2.0": {
       "net_usd": -13700.29,
       "gross_usd": -25512.57,
       "spread_capture_usd": 62805.7,
-      "adverse_selection_usd": -86760.65,
-      "inventory_other_usd": -1557.62,
+      "adverse_selection_usd": -86047.3,
+      "inventory_other_usd": -2270.97,
       "fee_rebate_usd": 11812.27,
-      "maker_shares": 5908001
+      "maker_shares": 5908001,
+      "not_flat_symbol_days": 0
     }
   },
   "chosen": {
@@ -297,10 +324,11 @@
         "net_usd": -39590.31,
         "gross_usd": -50741.96,
         "spread_capture_usd": 95125.91,
-        "adverse_selection_usd": -144904.45,
-        "inventory_other_usd": -963.42,
+        "adverse_selection_usd": -144077.93,
+        "inventory_other_usd": -1790.01,
         "fee_rebate_usd": 11151.66,
-        "maker_shares": 5579684
+        "maker_shares": 5579684,
+        "not_flat_symbol_days": 0
       },
       "net_by_day": {
         "20190730": -6081.34,
@@ -341,10 +369,11 @@
         "net_usd": -38422.64,
         "gross_usd": -52165.48,
         "spread_capture_usd": 100183.87,
-        "adverse_selection_usd": -152441.99,
-        "inventory_other_usd": 92.6,
+        "adverse_selection_usd": -151943.44,
+        "inventory_other_usd": -405.96,
         "fee_rebate_usd": 13742.84,
-        "maker_shares": 6875831
+        "maker_shares": 6875831,
+        "not_flat_symbol_days": 0
       },
       "net_by_day": {
         "20190730": -6319.03,

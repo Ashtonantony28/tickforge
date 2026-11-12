@@ -36,7 +36,8 @@ struct Recorder : tf::Strategy {
   void on_market(tf::Sim& s) override {
     if (s.best_bid() && s.best_ask()) {
       mid = 0.5 * (double(s.best_bid()) + double(s.best_ask())) / 1e4;
-      mid_by_sec[std::min<uint64_t>(s.now() / 1'000'000'000ULL, 86399)] = mid;
+      double& slot = mid_by_sec[std::min<uint64_t>(s.now() / 1'000'000'000ULL, 86399)];
+      if (slot == 0) slot = mid;  // first mid of each second, so "H seconds later" is not H + 1
     }
     inner->on_market(s);
   }

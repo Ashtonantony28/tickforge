@@ -112,7 +112,7 @@ class AvellanedaStoikov : public Strategy {
         if (now - last_t < p_.min_requote_ns) return;
         s.cancel(id);
         id = 0;
-        return;  // place the replacement once the cancel is acknowledged (no double exposure)
+        return;  // replacement goes out on a later message; with equal latency the cancel lands first
       }
     }
     if (px == 0 || !s.can_submit(side, p_.size)) return;
@@ -121,16 +121,22 @@ class AvellanedaStoikov : public Strategy {
   }
 
   void wind_down(Sim& s, uint32_t bb, uint32_t ba, uint64_t now) {
+    // Cancel every resting quote on every call, and the quotes that were still in flight at the
+    // stop (they rest only after arriving, so a one-off cancel_all would miss them).
     if (!wound_) {
-      s.cancel_all();
+      for (uint64_t id : {bid_id_, ask_id_})
+        if (id && s.in_flight(id)) s.cancel(id);
       bid_id_ = ask_id_ = 0;
       wound_ = true;
     }
+    for (const auto& o : s.open_orders())
+      if (o.resting && !s.pending_cancel(o.id)) s.cancel(o.id);
     if (now < p_.flat_ns || s.position() == 0 || now - last_flat_t_ < 100'000'000ULL) return;
-    for (const auto& o : s.open_orders()) if (o.qty) return;
     const int64_t q = s.position();
     const uint32_t qty = static_cast<uint32_t>(std::min<int64_t>(std::llabs(q), s.config().max_order_qty));
-    // Aggressive IOC at the far touch; risk check is on worst-case exposure, which shrinks here.
+    // Aggressive IOC at the far touch; the worst-case exposure check passes because any quote
+    // still open is on its way out and the IOC reduces the position.
+    if (!s.can_submit(q > 0 ? Side::Sell : Side::Buy, qty)) return;
     if (q > 0) s.submit(Side::Sell, bb, qty, /*ioc=*/true);
     else s.submit(Side::Buy, ba, qty, /*ioc=*/true);
     last_flat_t_ = now;

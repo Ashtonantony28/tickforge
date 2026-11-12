@@ -162,6 +162,8 @@ class SyncStats:
     check_mismatches: int = 0
     checks_skipped: int = 0
     levels_compared: int = 0
+    reanchors: int = 0
+    bid_levels_compared: int = 0
     crossed_batches: int = 0
     trades: int = 0
     first_t: int | None = None
@@ -277,6 +279,22 @@ class BinanceSync:
         if bad:
             self.stats.check_mismatches += 1
             self.stats.mismatch_log.append({"t": t, "L": L, "examples": bad[:5]})
+        elif exact:
+            # Re-anchor on a passing exact check: reload from this snapshot (state is exactly id L
+            # here) and re-apply the diffs after it. The known-depth band then follows the price
+            # instead of staying where the first snapshot put it. Emitted as ordinary events, so
+            # the C++ replay stays bit-exact.
+            self._load_snapshot(snap)
+            self.stats.syncs -= 1  # not a new sync, just a re-anchor
+            self.stats.reanchors += 1
+            for U, u, ch in reversed(undone):
+                for is_bid, px, _prev, new in ch:
+                    self.book.set(is_bid, px, new)
+                    self.out.append((BID if is_bid else ASK, px, new, 0))
+                self.out.append((BATCH, 0, 0, u))
+                self.undo.append((U, u, ch))
+                self.last_u = u
+            return
         self._redo(undone)
 
     def _redo(self, undone: list) -> None:
@@ -302,6 +320,8 @@ class BinanceSync:
                 if (is_bid, p) in exclude:
                     continue
                 self.stats.levels_compared += 1
+                if is_bid:
+                    self.stats.bid_levels_compared += 1
                 if lv.get(p, 0) != mine.get(p, 0):
                     bad.append({"side": key, "price": fmt_dec(p), "snap": fmt_dec(lv.get(p, 0)),
                                 "book": fmt_dec(mine.get(p, 0))})

@@ -3,7 +3,7 @@
 Design: ADR 0011. Strategy: Avellaneda-Stoikov on the synced L2 book (gamma 0.001 per lot, k 5 per
 USDT, tau 60 s, 0.001 BTC quotes, max 0.01 BTC, join-only, 200 ms requote limit, 50 ms simulated
 latency). Simulated fills only; maker fee set to 0 so the strategy's edge is visible (Binance VIP0
-spot maker fee is 10 bps, which alone would cost ~0.10 USDT per fill here).
+spot maker fee is 10 bps, which alone would cost ~0.073 USDT per 73 USDT fill here, about 98 USDT over run 1).
 
 ## Run 1: 2026-11-12, 1.23 h live (container restart ended it)
 
@@ -21,6 +21,13 @@ the check working as intended: a strategy change shows up as a log difference.
 
 Like M5 on equities, the market maker loses to adverse selection here, and with the real 10 bps maker
 fee it would lose far more. That is the honest result of the baseline.
+
+## Fill-model change after the run (audit M9-3)
+Run 1 used a fill model that read the queue ahead of a new quote at decision time. The audit
+pointed out that this puts size added during the 50 ms latency behind us, which is optimistic. The
+engine now reads `ahead` from the book at the first event after the order goes live. Run 1's
+numbers above are from the old model and are therefore slightly flattering; a replaced quote also
+still disappears instantly (no cancel latency), which is a known remaining optimism.
 
 ## Not done
 - **Two-week run:** the plan's M6 verify asks for a 2-week log. The cloud container restarted

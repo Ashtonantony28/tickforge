@@ -187,3 +187,23 @@ def test_check_cli_on_recording(tmp_path):
     assert l2._main(["check", str(tmp_path), "--events", str(ev)]) == 0
     r = l2.L2Replayer()
     assert r.feed(ev.read_bytes()) == ev.stat().st_size
+
+
+def test_reanchor_extends_checked_band_after_price_drift():
+    # The first snapshot is shallow; a later, deeper passing check re-anchors the book so that a
+    # wrong level far below the first snapshot's band is still caught (audit finding M9-2).
+    def snap(L, bids, asks):
+        return {"t": L, "k": "snap", "d": {"lastUpdateId": L, "bids": bids, "asks": asks}}
+    s = l2.BinanceSync()
+    s.process({"t": 0, "k": "depth", "d": {"U": 9, "u": 10, "b": [], "a": []}})
+    s.process(snap(10, [["100.00", "1"], ["99.99", "1"]], [["100.01", "1"]]))
+    s.process({"t": 1, "k": "depth", "d": {"U": 11, "u": 11, "b": [["98.00", "2"]], "a": []}})
+    s.process(snap(11, [["100.00", "1"], ["99.99", "1"], ["98.00", "2"]], [["100.01", "1"]]))
+    assert s.stats.check_mismatches == 0 and s.stats.reanchors == 1
+    s.process({"t": 2, "k": "depth", "d": {"U": 12, "u": 12, "b": [["99.00", "5"]], "a": []}})
+    s.process(snap(12, [["100.00", "1"], ["99.99", "1"], ["99.00", "7"], ["98.00", "2"]], [["100.01", "1"]]))
+    assert s.stats.check_mismatches == 1
+    # The emitted event stream still replays to the same book.
+    r = l2.L2Replayer()
+    r.feed(l2.encode(s.out))
+    assert r.book.bids == s.book.bids and r.book.asks == s.book.asks

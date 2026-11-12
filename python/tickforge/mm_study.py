@@ -53,7 +53,10 @@ def sweep(paths, configs, build, workers=4):
 def totals(by_day: dict) -> dict:
     keys = ["net_usd", "gross_usd", "spread_capture_usd", "adverse_selection_usd", "inventory_other_usd",
             "fee_rebate_usd", "maker_shares"]
-    return {k: round(sum(r[k] for d in by_day.values() for r in d.values()), 2) for k in keys}
+    out = {k: round(sum(r[k] for d in by_day.values() for r in d.values()), 2) for k in keys}
+    # Symbol-days that ended with inventory (should be 0: the strategy flattens by 15:55).
+    out["not_flat_symbol_days"] = sum(r["final_position"] != 0 for d in by_day.values() for r in d.values())
+    return out
 
 
 def series(by_day: dict) -> np.ndarray:
@@ -79,7 +82,7 @@ def run(sub_dir: Path, out_dir: Path, build: Path) -> dict:
         if c not in test_res:
             continue
         r = series(test_res[c])
-        ds = deflated_sharpe(r, np.append(sr_trials, sharpe(r)))
+        ds = deflated_sharpe(r, sr_trials)  # the 27 grid trials; the chosen config is one of them
         per_day = {d: round(sum(x["net_usd"] for x in v.values()), 2) for d, v in sorted(test_res[c].items())}
         report["test"][name] = {"config": c, "totals": totals(test_res[c]), "net_by_day": per_day,
                                 "per_symbol_day_sharpe": round(ds["sr"], 3), "dsr": round(ds["dsr"], 4),

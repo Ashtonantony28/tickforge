@@ -12,5 +12,5 @@ Full plan: project-plans/quant-trading/PLAN.md (project files). Concept A, ADR 0
 | M5 | Market making (Avellaneda-Stoikov, alpha skew, risk, calibration) | done (loses to adverse selection on held-out days; calibration vs real fills not possible) |
 | M6 | Live paper trading on public crypto feed | done (daemon, verify, 1.2 h live run; 2-week run pending a host that stays up) |
 | M7 | FPGA ITCH feed handler + book in SystemVerilog (sim, bit-exact) | done (sim; synthesis in M8) |
-| M8 | FPGA bring-up (optional) | |
-| M9 | Write-up + audit | |
+| M8 | FPGA bring-up (optional) | synthesis done (ECP5 open flow: 22 MHz small config, default does not fit; RTL fixes listed); board not done |
+| M9 | Write-up + audit | done (README results; independent audit: 0 critical/high, mediums fixed or documented) |
