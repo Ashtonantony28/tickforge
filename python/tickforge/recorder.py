@@ -60,7 +60,9 @@ def fetch_snapshot(symbol: str, limit: int) -> dict:
 
 
 class Recorder:
-    def __init__(self, symbol: str, out: Path, hours: float, snapshot_every: float, limit: int) -> None:
+    def __init__(self, symbol: str, out: Path, hours: float, snapshot_every: float, limit: int,
+                 redundancy: int = 2) -> None:
+        self.redundancy = redundancy
         self.symbol = symbol.lower()
         self.w = RotatingWriter(out, symbol.upper())
         self.deadline = time.monotonic() + hours * 3600
@@ -68,6 +70,7 @@ class Recorder:
         self.limit = limit
         self.stop = asyncio.Event()
         self.last_u: int | None = None
+        self.last_trade = -1
         self.need_snapshot = True
         self.stats = {"depth": 0, "trade": 0, "snap": 0, "live_gaps": 0, "connects": 0, "errors": 0}
 
@@ -94,37 +97,48 @@ class Recorder:
                 next_t = time.monotonic() + self.snapshot_every
             await asyncio.sleep(0.5)
 
-    async def stream_loop(self) -> None:
+    async def stream_loop(self, idx: int = 0) -> None:
+        """One websocket connection. With `redundancy` > 1 several run at once and the first copy
+        of every update id / trade id wins, so a single dropped connection leaves no gap."""
         import websockets  # optional dependency, only needed for live recording
 
         backoff = 1.0
         while not self.stop.is_set():
             try:
-                async with websockets.connect(WS_URL.format(s=self.symbol), ping_interval=20,
+                async with websockets.connect(WS_URL.format(s=self.symbol), ping_interval=20, ping_timeout=60,
                                               max_size=2**24) as ws:
                     self.stats["connects"] += 1
-                    self.meta(event="connect", url=WS_URL.format(s=self.symbol))
-                    self.last_u = None
-                    self.need_snapshot = True
+                    self.meta(event="connect", conn=idx, url=WS_URL.format(s=self.symbol))
                     backoff = 1.0
                     async for raw in ws:
                         t = time.time_ns()
                         msg = json.loads(raw)
                         d = msg.get("data", msg)
-                        kind = "depth" if d.get("e") == "depthUpdate" else "trade" if d.get("e") == "trade" else "other"
-                        self.w.write(t, kind, d)
-                        self.stats[kind] = self.stats.get(kind, 0) + 1
-                        if kind == "depth":
+                        e = d.get("e")
+                        if e == "depthUpdate":
+                            if self.last_u is not None and d["u"] <= self.last_u:
+                                self.stats["dup"] = self.stats.get("dup", 0) + 1
+                                continue
                             if self.last_u is not None and d["U"] != self.last_u + 1:
                                 self.stats["live_gaps"] += 1
-                                self.meta(event="live_gap", U=d["U"], last_u=self.last_u)
+                                self.meta(event="live_gap", U=d["U"], last_u=self.last_u, conn=idx)
                                 self.need_snapshot = True
                             self.last_u = d["u"]
+                            kind = "depth"
+                        elif e == "trade":
+                            if d["t"] <= self.last_trade:
+                                continue
+                            self.last_trade = d["t"]
+                            kind = "trade"
+                        else:
+                            kind = "other"
+                        self.w.write(t, kind, d)
+                        self.stats[kind] = self.stats.get(kind, 0) + 1
                         if self.stop.is_set():
                             break
             except Exception as e:
                 self.stats["errors"] += 1
-                self.meta(event="disconnect", error=repr(e))
+                self.meta(event="disconnect", conn=idx, error=repr(e))
                 await asyncio.sleep(backoff)
                 backoff = min(backoff * 2, 60.0)
 
@@ -140,7 +154,8 @@ class Recorder:
         for sig in (signal.SIGINT, signal.SIGTERM):
             loop.add_signal_handler(sig, self.stop.set)
         self.meta(event="start", symbol=self.symbol)
-        tasks = [asyncio.create_task(c) for c in (self.stream_loop(), self.snapshot_loop(), self.housekeeping())]
+        coros = [self.stream_loop(i) for i in range(self.redundancy)] + [self.snapshot_loop(), self.housekeeping()]
+        tasks = [asyncio.create_task(c) for c in coros]
         await self.stop.wait()
         await self.snapshot()  # final snapshot closes the last check window
         for t in tasks:
@@ -158,8 +173,9 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--hours", type=float, default=24.0)
     p.add_argument("--snapshot-every", type=float, default=300.0, help="seconds between REST checks")
     p.add_argument("--limit", type=int, default=1000, help="REST snapshot depth")
+    p.add_argument("--redundancy", type=int, default=2, help="parallel websocket connections")
     a = p.parse_args(argv)
-    stats = asyncio.run(Recorder(a.symbol, a.out, a.hours, a.snapshot_every, a.limit).run())
+    stats = asyncio.run(Recorder(a.symbol, a.out, a.hours, a.snapshot_every, a.limit, a.redundancy).run())
     print(json.dumps(stats))
     return 0
 

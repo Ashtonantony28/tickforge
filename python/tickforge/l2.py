@@ -338,9 +338,9 @@ class BinanceSync:
         elif k == "trade":
             st.trades += 1
         elif k == "meta" and d.get("event") == "connect" and st.diffs:
+            # Reconnects are counted, not treated as gaps: with redundant connections the stream
+            # can be continuous across one, and the U == u + 1 check catches any real loss.
             st.reconnects += 1
-            if self.synced:
-                self._gap(t, "reconnect")
 
 
 
