@@ -43,7 +43,10 @@ replayed in the cloud container on 2026-11-12, streamed through `gzip -dc` (no u
 
 Digest `33693a0ece28018e`. Pass criteria (ADR 0004) met: `unknown_ref == 0`, `overfill == 0`,
 `bad_messages == 0`; every order added during the day is gone by the close. Wall time 170 s
-including decompression (gzip-bound).
+including decompression (gzip-bound). From the uncompressed 11.2 GB file, with the per-message
+digest on: 79.2 s and 77.6 s, i.e. **4.7M msgs/s** on real data. That is below the 12M msgs/s
+synthetic number: a real day has ~12k instruments and a much larger live-order set, so the order
+index and level vectors miss cache far more often. Profiling this is an M9 item.
 ```bash
 python data/fetch.py itch-sample --date 01302019
 gzip -dc data/raw/itch/01302019.NASDAQ_ITCH50.gz | ./build/engine/tf_replay /dev/stdin
