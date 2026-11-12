@@ -13,6 +13,15 @@
 
 namespace tf {
 
+// Top of book after a message that changed one instrument (the RTL feed handler emits the same).
+struct TobEvent {
+  uint64_t index;
+  uint32_t bid_px;
+  uint64_t bid_qty;
+  uint32_t ask_px;
+  uint64_t ask_qty;
+};
+
 class Replayer : public itch::NullHandler {
  public:
   explicit Replayer(bool with_digest = true, std::size_t expected_orders = 1 << 20)
@@ -41,7 +50,17 @@ class Replayer : public itch::NullHandler {
   }
   void on_other(char) { ++other_; }
   void on_bad_message(char, uint16_t) { ++bad_; }
+  // Record a TobEvent for every update to `locate` (-1 disables).
+  void set_trace_locate(int32_t locate) { trace_locate_ = locate; }
+  const std::vector<TobEvent>& trace() const { return trace_; }
+
   void on_message_end() {
+    if (touched_ != MarketBooks::kUnknown && touched_ == trace_locate_) {
+      const Book& b = *books_.book(static_cast<uint16_t>(touched_));
+      trace_.push_back(TobEvent{msg_index_, b.bids.empty() ? 0u : b.bids.best().price,
+                                b.bids.empty() ? 0u : b.bids.best().qty, b.asks.empty() ? 0u : b.asks.best().price,
+                                b.asks.empty() ? 0u : b.asks.best().qty});
+    }
     if (touched_ != MarketBooks::kUnknown && with_digest_) fold(static_cast<uint16_t>(touched_));
     touched_ = MarketBooks::kUnknown;
     ++msg_index_;
@@ -72,6 +91,8 @@ class Replayer : public itch::NullHandler {
   Digest digest_;
   bool with_digest_;
   int32_t touched_ = MarketBooks::kUnknown;
+  int32_t trace_locate_ = -1;
+  std::vector<TobEvent> trace_;
   uint64_t msg_index_ = 0;
   uint64_t trades_ = 0;
   uint64_t system_events_ = 0;

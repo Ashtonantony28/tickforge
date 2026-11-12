@@ -1,3 +1,5 @@
 pybind11>=2.12
 pytest>=8
 numpy>=1.26
+cocotb>=2.0
+verilator>=5.036
