@@ -73,6 +73,7 @@ def test_queue_model_fills_only_after_ahead_consumed():
     assert eng.fills == 1 and eng.pos == 5 * 10**7
     eng.on_trade(3, {"p": "99.99", "q": "0.01", "m": True})  # trade through: rest fills
     assert eng.orders["B"] is None and eng.pos == 10**8
-    eng.orders["S"] = paper.Order("S", 101 * 10**8, 10**8, 0, 10)
-    eng.on_trade(5, {"p": "101", "q": "1", "m": False})  # not live yet (latency)
-    assert eng.orders["S"] is not None
+    eng.orders["S"] = paper.Order("S", 101 * 10**8, 10**8, None, 10)
+    eng._activate(5)
+    eng.on_trade(5, {"p": "101", "q": "1", "m": False})  # not live yet (latency): no fill
+    assert eng.orders["S"].qty == 10**8 and eng.orders["S"].ahead is None

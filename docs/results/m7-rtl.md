@@ -32,9 +32,10 @@ by one byte failed on record 0.
 | Sustained input | 1.0 byte/cycle (no back-pressure with gap-free input) |
 | Latency, last byte of message → top-of-book out | min 4, median 4, max 10 cycles |
 
-At an assumed 250 MHz this is about 7M ITCH messages/s per instance and 16 ns median
-tick-to-book. **Fmax has not been measured:** there is no synthesis run yet, and ADR 0007 lists
-what must change for an FPGA.
+**Measured in M8:** on a Lattice ECP5-85F (open-source flow) a reduced config (256 orders, 16
+levels) closes at 22 MHz, about 0.7M ITCH messages/s and ~180 ns median tick-to-book; the default
+config does not fit. See [m8-synth.md](m8-synth.md) for the critical path and the fixes. (An earlier
+version of this page assumed 250 MHz; that assumption was wrong.)
 
 ## Reproduce
 ```bash

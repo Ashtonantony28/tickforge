@@ -104,6 +104,7 @@ class PaperEngine:
                 self.orders = {"B": None, "S": None}
                 self.log(t, "pull", why="unsynced")
             return
+        self._activate(t)
         if k == "trade":
             self.on_trade(t, rec["d"])
         elif k == "depth":
@@ -111,10 +112,16 @@ class PaperEngine:
         self.mark(t)
         self.quote(t)
 
+    def _activate(self, t):
+        for side, o in self.orders.items():
+            if o is not None and o.ahead is None and t >= o.live_at:
+                book = self.sync.book.bids if side == "B" else self.sync.book.asks
+                o.ahead = book.get(o.px, 0)
+
     def on_trade(self, t, d):
         px, q = parse_dec(d["p"]), parse_dec(d["q"])
         for side, o in self.orders.items():
-            if o is None or t < o.live_at:
+            if o is None or o.ahead is None:
                 continue
             # Buyer-maker trade = a sell aggressor hit bids; it can fill our bid at px <= our price.
             hits_us = (side == "B" and d["m"] and px <= o.px) or (side == "S" and not d["m"] and px >= o.px)
@@ -132,7 +139,7 @@ class PaperEngine:
     def on_depth(self, t):
         b, a = self.best()
         for side, o in list(self.orders.items()):
-            if o is None or t < o.live_at:
+            if o is None or o.ahead is None:
                 continue
             book = self.sync.book.bids if side == "B" else self.sync.book.asks
             lvl = book.get(o.px, 0)
@@ -210,10 +217,11 @@ class PaperEngine:
                     self.log(t, "cancel", side=side, why="limit")
                 continue
             book = self.sync.book.bids if side == "B" else self.sync.book.asks
-            self.orders[side] = Order(side, want[side], p.size, book.get(want[side], 0),
-                                      t + p.latency_ms * 1_000_000)
+            # `ahead` is unknown until the order reaches the venue: it is taken from the book at the first
+            # event after live_at (see _activate), so size added during the latency queues ahead of us.
+            self.orders[side] = Order(side, want[side], p.size, None, t + p.latency_ms * 1_000_000)
             self.last_quote_t[side] = t
-            self.log(t, "quote", side=side, px=want[side], ahead=self.orders[side].ahead)
+            self.log(t, "quote", side=side, px=want[side])
 
     def summary(self) -> dict:
         return {"fills": self.fills, "position": self.pos, "equity_usdt": self.equity(), "fees_usdt": self.fees_usdt,

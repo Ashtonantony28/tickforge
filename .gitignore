@@ -10,3 +10,4 @@ data/cache/
 *.itch.gz
 *.NASDAQ_ITCH50*
 *.whl
+build-synth/

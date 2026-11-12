@@ -174,7 +174,7 @@ def run(feature_dir: Path, out_dir: Path) -> dict:
             mins, gross, net = trade_proxy(days[k], h, model, thr)
             gross_all.append(gross), net_all.append(net)
             n_trades += len(net)
-            series.append(per_minute(mins, net, n_min)[SKIP // 60 + 1:-(SKIP // 60 + 1)])
+            series.append(per_minute(mins, net, n_min)[SKIP // 60:-(SKIP // 60 + 1)])
         gross_c, net_c = np.concatenate(gross_all), np.concatenate(net_all)
         minute_net[name] = np.concatenate(series)
         results[name] = {
