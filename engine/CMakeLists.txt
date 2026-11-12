@@ -21,3 +21,9 @@ target_link_libraries(tf_backtest PRIVATE tickforge_engine)
 
 add_executable(tf_l2replay tools/tf_l2replay.cpp)
 target_link_libraries(tf_l2replay PRIVATE tickforge_engine)
+
+add_executable(tf_features tools/tf_features.cpp)
+target_link_libraries(tf_features PRIVATE tickforge_engine)
+
+add_executable(tf_filter tools/tf_filter.cpp)
+target_link_libraries(tf_filter PRIVATE tickforge_engine)
