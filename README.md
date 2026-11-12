@@ -13,7 +13,8 @@ bit-exact against the C++ engine.
 |---|---|
 | M0 scaffold, CI, ADRs, data scripts | done |
 | M1 L3 order book + ITCH replay | done: bit-exact vs Python reference, 12M msgs/s ([results](docs/results/m1-replay.md)) |
-| M2-M9 | see [roadmap](docs/ROADMAP.md) |
+| M2 backtester | done: exact L3 queue position, latency, fees, risk limits, reproducible ([results](docs/results/m2-backtester.md)) |
+| M3-M9 | see [roadmap](docs/ROADMAP.md) |
 
 ## Quick start
 
@@ -27,8 +28,8 @@ pytest -q                                      # C++ engine vs Python reference,
 ## Layout
 
 ```
-engine/include/tickforge/  itch.hpp (parser) · order_book.hpp · flat_map.hpp · replay.hpp · digest.hpp
-engine/tests, tools, bench C++ tests, tf_replay, tf_bench
+engine/include/tickforge/  itch.hpp · order_book.hpp · flat_map.hpp · replay.hpp · digest.hpp · sim.hpp (backtester)
+engine/tests, tools, bench C++ tests, tf_replay, tf_backtest, tf_bench
 bindings/                  pybind11 module _tickforge
 python/tickforge/          itch codec, reference book, synthetic ITCH generator
 fixtures/                  committed synthetic ITCH fixtures + expected results

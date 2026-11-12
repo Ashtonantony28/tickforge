@@ -33,6 +33,7 @@ struct Order {
   uint32_t shares;
   uint32_t prev;
   uint32_t next;
+  uint64_t seq;  // arrival sequence (global add counter): exact queue position for the backtester
   uint16_t locate;
   Side side;
 };
@@ -64,6 +65,7 @@ class BookSide {
     return (i < levels_.size() && levels_[i].price == price) ? i : levels_.size();
   }
   Level& at(std::size_t i) { return levels_[i]; }
+  const Level& at(std::size_t i) const { return levels_[i]; }
   void erase(std::size_t i) { levels_.erase(levels_.begin() + static_cast<std::ptrdiff_t>(i)); }
 
  private:
@@ -122,7 +124,7 @@ class MarketBooks {
       return kUnknown;
     }
     Order& o = pool_[idx];
-    o = Order{ref, price, shares, kNil, kNil, locate, side};
+    o = Order{ref, price, shares, kNil, kNil, next_seq_++, locate, side};
     if (locate >= books_.size()) books_.resize(std::size_t{locate} + 1);
     BookSide& bs = books_[locate].side(side);
     Level& lv = bs.at(bs.find_or_insert(price));
@@ -158,6 +160,11 @@ class MarketBooks {
       o.shares -= shares;
     }
     return locate;
+  }
+
+  // Delete when shares == UINT32_MAX, otherwise reduce (used by the backtester's single entry point).
+  int32_t reduce_or_remove(uint64_t ref, uint32_t shares, bool is_execution) {
+    return shares == ~uint32_t{0} ? remove(ref) : reduce(ref, shares, is_execution);
   }
 
   int32_t remove(uint64_t ref) {
@@ -197,6 +204,8 @@ class MarketBooks {
   const Order& order_at(uint32_t idx) const { return pool_[idx]; }
   std::size_t live_orders() const { return index_.size(); }
   const BookStats& stats() const { return stats_; }
+  // Sequence number the next added order will receive; anything already resting has a smaller one.
+  uint64_t next_seq() const { return next_seq_; }
 
  private:
   uint32_t alloc() {
@@ -229,6 +238,7 @@ class MarketBooks {
   std::vector<Book> books_;
   std::vector<Order> pool_;
   uint32_t free_head_ = kNil;
+  uint64_t next_seq_ = 0;
   FlatMap64 index_;
   BookStats stats_;
 };
