@@ -57,6 +57,13 @@ def main(argv: list[str] | None = None) -> int:
         urllib.request.urlretrieve(url, tmp)
         tmp.rename(dest)
     digest = sha256(dest)
+    if a.source == "binance-trades":
+        # Binance publishes a SHA-256 next to every dump file; check it before pinning anything.
+        with urllib.request.urlopen(url + ".CHECKSUM", timeout=30) as r:
+            published = r.read().decode().split()[0]
+        if published != digest:
+            print(f"CHECKSUM MISMATCH vs Binance's published value for {rel}", file=sys.stderr)
+            return 1
     sums = json.loads(CHECKSUMS.read_text())
     pinned = sums.get(rel)
     if pinned is None:

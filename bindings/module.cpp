@@ -2,6 +2,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
+#include "tickforge/l2_book.hpp"
 #include "tickforge/replay.hpp"
 #include "tickforge/sim.hpp"
 
@@ -40,6 +41,24 @@ const char* side_str(tf::Side s) { return s == tf::Side::Buy ? "B" : "S"; }
 
 PYBIND11_MODULE(_tickforge, m) {
   m.doc() = "Tickforge C++ engine";
+  py::class_<tf::L2Replayer>(m, "L2Replayer")
+      .def(py::init<std::size_t>(), py::arg("reserve_levels") = 8192)
+      .def("feed",
+           [](tf::L2Replayer& r, py::bytes b) {
+             const std::string_view sv = b;
+             return r.feed(reinterpret_cast<const uint8_t*>(sv.data()), sv.size());
+           },
+           "Feed 32-byte L2 events; returns bytes consumed.")
+      .def("top",
+           [](const tf::L2Replayer& r, std::size_t n, bool bids) {
+             const tf::L2Side& s = bids ? r.book().bids : r.book().asks;
+             std::vector<std::pair<int64_t, int64_t>> out;
+             for (std::size_t i = 0; i < s.size() && i < n; ++i) out.emplace_back(s.level(i).price, s.level(i).qty);
+             return out;
+           })
+      .def_property_readonly("digest", &tf::L2Replayer::digest)
+      .def_property_readonly("batches", &tf::L2Replayer::batches)
+      .def_property_readonly("crossed", &tf::L2Replayer::crossed);
   py::class_<tf::Replayer>(m, "Replayer")
       .def(py::init<bool, std::size_t>(), py::arg("with_digest") = true, py::arg("expected_orders") = 1 << 20)
       .def("feed",

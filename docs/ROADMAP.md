@@ -5,9 +5,9 @@ Full plan: project-plans/quant-trading/PLAN.md (project files). Concept A, ADR 0
 | # | Milestone | Status |
 |---|---|---|
 | M0 | Scaffold, CI, ADRs, data scripts | done |
-| M1 | L3 order book + ITCH 5.0 replay, Python reference, benchmark | done (real ITCH day pending local run) |
+| M1 | L3 order book + ITCH 5.0 replay, Python reference, benchmark | done (real ITCH day 2019-01-30 passes) |
 | M2 | Matching + backtester (queue fills, latency, fees, determinism) | done |
-| M3 | Crypto L2 data path (recorder, dumps, L2 mode) | |
+| M3 | Crypto L2 data path (recorder, dumps, L2 mode) | done (24 h recording run pending) |
 | M4 | Alpha research (features, purged walk-forward, deflated Sharpe) | |
 | M5 | Market making (Avellaneda-Stoikov, alpha skew, risk, calibration) | |
 | M6 | Live paper trading on public crypto feed | |
