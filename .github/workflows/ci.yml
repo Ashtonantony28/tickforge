@@ -1,0 +1,44 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build-test:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler: [gcc, clang]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install tools
+        run: |
+          sudo apt-get update -q && sudo apt-get install -yq ninja-build
+          pip install -r requirements-dev.txt
+      - name: Configure
+        run: |
+          if [ "${{ matrix.compiler }}" = clang ]; then export CXX=clang++; else export CXX=g++; fi
+          cmake -S . -B build -G Ninja -DPython3_EXECUTABLE=$(which python)
+      - name: Build
+        run: cmake --build build
+      - name: C++ tests
+        run: ctest --test-dir build --output-on-failure
+      - name: Python tests
+        run: TF_BUILD_DIR=build pytest -q
+
+  sanitizers:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install tools
+        run: sudo apt-get update -q && sudo apt-get install -yq ninja-build
+      - name: ASan + UBSan
+        run: |
+          cmake -S . -B build-asan -G Ninja -DCMAKE_BUILD_TYPE=Debug -DTF_SANITIZE=ON
+          cmake --build build-asan
+          ctest --test-dir build-asan --output-on-failure
