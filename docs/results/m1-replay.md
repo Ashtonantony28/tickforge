@@ -33,11 +33,18 @@ PYTHONPATH=python python3 -m tickforge.synth /tmp/bench.itch -n 2000000 --seed 4
 ./build/engine/tf_replay /tmp/bench.itch
 ```
 
-## Real ITCH day (pending)
-The container cannot reach Nasdaq's sample-data host. On a machine with network access:
+## Real ITCH day: 2019-01-30 (passes)
+Nasdaq sample file `01302019.NASDAQ_ITCH50.gz` (4.76 GB, SHA-256 pinned in `data/checksums.json`),
+replayed in the cloud container on 2026-11-12, streamed through `gzip -dc` (no uncompressed copy):
+
+| Messages | Adds | Executions | Cancels | Deletes | Replaces | Trades (hidden) | unknown_ref | overfill | bad_messages | Live orders at end |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 368,366,634 | 164,696,353 | 8,255,881 | 4,669,874 | 158,273,361 | 27,222,746 | 1,326,184 | 0 | 0 | 0 | 0 |
+
+Digest `33693a0ece28018e`. Pass criteria (ADR 0004) met: `unknown_ref == 0`, `overfill == 0`,
+`bad_messages == 0`; every order added during the day is gone by the close. Wall time 170 s
+including decompression (gzip-bound).
 ```bash
-python data/fetch.py itch-sample --date 01302019 --pin
-gunzip -k data/raw/itch/01302019.NASDAQ_ITCH50.gz
-./build/engine/tf_replay data/raw/itch/01302019.NASDAQ_ITCH50
+python data/fetch.py itch-sample --date 01302019
+gzip -dc data/raw/itch/01302019.NASDAQ_ITCH50.gz | ./build/engine/tf_replay /dev/stdin
 ```
-Pass criteria (ADR 0004): `unknown_ref == 0`, `overfill == 0`, `bad_messages == 0`.
