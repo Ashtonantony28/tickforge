@@ -29,6 +29,18 @@ The honest headline: **the engine, data path and verification are solid; the str
 money**, and the reports show exactly why (spread and adverse selection), with every failed signal
 kept in the graveyard.
 
+## Gallery
+
+![Order book rebuilt from a synthetic ITCH 5.0 stream](docs/media/book-replay.gif)
+
+*The Python reference book replaying the committed **synthetic** fixture `fixtures/synth_small.itch` (20,000 seeded messages, 6 stocks; no real market data). It shows one stock's top-8 ladder, the touch with executions, and the message mix. The script asserts that the replay's digest equals the fixture's, which the C++ engine also matches bit for bit. [MP4](docs/media/book-replay.mp4)*
+
+![Market-making P&L decomposition](docs/media/mm-pnl.png)
+
+*Why the market maker loses: aggregate P&L over 5 held-out real Nasdaq days, from [m5-mm](docs/results/m5-mm.md). Only the aggregate table is used; no market data is committed.*
+
+Regenerate both with `python3 tools/media.py`.
+
 ## Architecture
 
 ```mermaid
